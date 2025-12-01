@@ -7,33 +7,31 @@
 
 import SwiftUI
 
-struct ContentView: View {
-    @State private var path = NavigationPath() // accept different types of navigations not specific. here works for both int and string type navigations
+struct DetailView:View {
+    let number:Int
+    @Binding var path : NavigationPath
+    
     var body: some View {
-        NavigationStack(path: $path){
-            VStack{
-                List{
-                    ForEach(0..<10){i in
-                        NavigationLink("Item number \(i)", value: i) // it will be open via int navigationdestination type.
-                    }
-                    
-                    ForEach(0..<5){i in
-                        NavigationLink("Item string \(i)",value: String(i))// it will be open via string navigation destination.
-                    }
-                }
-            }.navigationDestination(for: Int.self){ selection in
-                Text("Your selection \(selection)")
-            }.navigationDestination(for: String.self){ selection in
-                Text("Your selection string \(selection)")
-            }.toolbar{
-                Button("Add Int"){
-                    path.append(56) // it will be open via int navigationdestination type.
-                }
-                
-                Button("Add String"){
-                    path.append("Hello world!")// it will be open via string navigation destination.
+        NavigationLink("Go to random number",value:Int.random(in: 0...1000))
+            .navigationTitle("Number: \(number)")
+            .toolbar{
+                Button("Home"){
+                    path = NavigationPath() // reset to home.
+//                    path = path.removeAll() // reset to home. when all the
                 }
             }
+    }
+}
+
+struct ContentView: View {
+    @State private var path = NavigationPath()
+    
+    var body: some View {
+        NavigationStack(path: $path){
+            DetailView(number: 0, path: $path)
+                .navigationDestination(for: Int.self){ i in
+                    DetailView(number:i,path: $path)
+                }
         }
     }
 }

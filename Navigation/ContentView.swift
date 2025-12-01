@@ -48,6 +48,9 @@ struct DetailView:View {
     var body: some View {
         NavigationLink("Go to random number",value:Int.random(in: 0...1000))
             .navigationTitle("Number: \(number)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbarBackground(.blue, for: .navigationBar) // shows only when you scroll the screen.
+            .toolbarColorScheme(.dark) // change color of the toolbar title
             .toolbar{
                 Button("Home"){
                     path = NavigationPath() // reset to home.
@@ -66,6 +69,13 @@ struct ContentView: View {
             DetailView(number: 0, path: $path.path)
                 .navigationDestination(for: Int.self){ i in
                     DetailView(number:i,path: $path.path)
+                }
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading){
+                        Button("Tap Me"){
+                            // do nothing
+                        }
+                    }
                 }
         }
     }

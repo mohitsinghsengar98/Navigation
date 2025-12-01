@@ -16,7 +16,7 @@ struct DetailView:View {
     
     init(number: Int) {
         self.number = number
-        print("Creating the detail View")
+        print("Creating the detail View \(number)")
     }
 }
 
@@ -26,7 +26,7 @@ struct ContentView: View {
             List(0..<1000){ i in
                 NavigationLink("Select \(i)",value: i)
             }.navigationDestination(for: Int.self){ selection in  // by using the navigation destination we are creating the view only when it is called. not when we are showing the /setupping this navigation link.
-                Text("You selected \(selection)")
+                DetailView(number:selection)
             }
         }
     }

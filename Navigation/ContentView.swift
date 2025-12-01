@@ -44,13 +44,24 @@ class PathStore{
 struct DetailView:View {
     let number:Int
     @Binding var path : NavigationPath
+    @State private var title = ""
+    
+    var displayTitle :String {
+        return "Number: \(number)"
+    }
     
     var body: some View {
+        
         NavigationLink("Go to random number",value:Int.random(in: 0...1000))
-            .navigationTitle("Number: \(number)")
+            .onAppear{
+                if title.isEmpty {
+                    title = displayTitle
+                }
+            }
+            .navigationTitle($title) // it creates a number editable by user.
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(.blue, for: .navigationBar) // shows only when you scroll the screen.
-            .toolbarColorScheme(.dark) // change color of the toolbar title
+            .toolbarColorScheme(.light) // change color of the toolbar title
             .toolbar{
                 Button("Home"){
                     path = NavigationPath() // reset to home.

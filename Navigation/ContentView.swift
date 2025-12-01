@@ -10,7 +10,7 @@ import SwiftUI
 // if we have defined the path as [Int] int array.
 @Observable
 class PathStore{
-    var path : [Int]{
+    var path : NavigationPath{
         didSet{
             save()
         }
@@ -20,18 +20,20 @@ class PathStore{
     
     init(){
         if let data = try? Data(contentsOf: savePath){
-            if let decoded = try? JSONDecoder().decode([Int].self, from: data){
-                path = decoded
+            if let decoded = try? JSONDecoder().decode(NavigationPath.CodableRepresentation.self, from: data){
+                path = NavigationPath(decoded)
                 return
             }
         }
         
-        path = []
+        path = NavigationPath()
     }
     
     func save(){
+        guard let representation = path.codable else{ return }
+        
         do{
-            let pathData = try JSONEncoder().encode(path)
+            let pathData = try JSONEncoder().encode(representation)
             try? pathData.write(to: savePath)
         }catch{
             print("failed to save the data")
@@ -41,15 +43,15 @@ class PathStore{
 
 struct DetailView:View {
     let number:Int
-    @Binding var path : [Int]
+    @Binding var path : NavigationPath
     
     var body: some View {
         NavigationLink("Go to random number",value:Int.random(in: 0...1000))
             .navigationTitle("Number: \(number)")
             .toolbar{
                 Button("Home"){
-//                    path = NavigationPath() // reset to home.
-                    path.removeAll() // reset to home. when all the
+                    path = NavigationPath() // reset to home.
+//                    path.removeAll() // reset to home. when all the
                 }
             }
     }
